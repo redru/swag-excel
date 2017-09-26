@@ -4,7 +4,9 @@
 
 #include "yaml-cpp/yaml.h"
 #include "libxl\libxl.h"
+#include "Swagger.h"
 
+using namespace std;
 using namespace libxl;
 
 std::string src_file = "";
@@ -35,7 +37,7 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	YAML::Node swagger = YAML::LoadFile(src_file);
+	/* YAML::Node swagger = YAML::LoadFile(src_file);
 
 	Book* book = xlCreateBook();
 
@@ -48,7 +50,11 @@ int main(int argc, char* argv[]) {
 	createServicesSheet(swagger, services_sheet);
 
 	book->save(target_file.c_str());
-	book->release();
+	book->release(); */
+
+	Swagger swagger(src_file);
+	Services services = swagger.GetServices();
+	cout << services[0].GetMethod("post").GetDescription() << endl;
 
 	return 0;
 }

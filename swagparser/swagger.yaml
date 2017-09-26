@@ -1,0 +1,344 @@
+# Section defining the swagger configuration
+# ===========================================================================
+swagger: '2.0'
+info:
+  description: These are the APIs to manage claims
+  version: 1.0.0
+  title: Claim management
+  contact:
+    email: eadevelopment@allianz.it
+host: 'localhost:8080'
+basePath: /claim/v1
+tags:
+  - name: Adjusting
+    description: Everything about the adjuster abd the Adjusting Center
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: username
+    in: header
+schemes:
+  - https
+
+#H API paths defined in this section
+# ===========================================================================
+paths:
+  #/ /adjusters/{adjusterId}/claimSettlementCenter/
+  '/adjusters/{adjusterId}/claimSettlementCenter/':
+    get:
+      operationId: _getClaimSettlementsFromAdjuster
+      summary: 'List of Claim settlememt centres'
+      description: List of Claim settlement centres in which the claim adjuster is working.
+      tags:
+        - Adjusting
+      security:
+        - api_key: []
+      parameters:
+        - name: adjusterId
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: >-
+            The list of the Claim settlement centres in which the claim adjuster is working
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ClaimSettlementCenterInfo'
+
+  #/ /adjusters/{adjusterId}/profiles/
+  '/adjusters/{adjusterId}/profiles/':
+    get:
+      operationId: _getProfilesFromAdjuster
+      summary: 'List containing Adjuster assigned profiles'
+      # la lista dei profili di un liquidatore (PROFIQ00)
+      description: Adjuster profiles list
+      tags:
+        - Adjusting
+      security:
+        - api_key: []
+      parameters:
+        - name: adjusterId
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: >-
+            The list of the profiles assigned to the given Adjuster
+          schema:
+            $ref: '#/definitions/Profile'
+
+  #/ /claimSettlementCenter/{claimSettlementCenterId}/
+  '/claimSettlementCenter/{claimSettlementCenterId}/':
+    get:
+      operationId: _getClaimSettlementDetail
+      summary: 'List of Claim settlememt centres'
+      description: List of Claim settlement centres in which the claim adjuster is working.
+      tags:
+        - Adjusting
+      security:
+        - api_key: []
+      parameters:
+        - name: claimSettlementCenterId
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: >-
+            The list of the Claim settlement centres in which the claim adjuster is working
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ClaimSettlementCenter'
+
+  #/ /claimSettlementCenter/{claimSettlementCenterId}/adjusters/
+  '/claimSettlementCenter/{claimSettlementCenterId}/adjusters/':
+    get:
+      operationId: _getAdjustersFromClaimSettlementCenter
+      summary: 'List of Adjusters'
+      description: List of Adjusters related to the given Claim Settlement Center id
+      tags:
+        - Adjusting
+      security:
+        - api_key: []
+      parameters:
+        - name: adjusterId
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: >-
+            The list of the Claim settlement centres in which the claim adjuster is working
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ClaimSettlementCenterInfo'
+
+  # '/notifications/':
+
+#H In this section Resources are defined and listed
+# ===========================================================================
+definitions:
+  #/ Web User
+  #/ This is the virtual user that is connected to the application
+  WebUser:
+    description: User logged in the system
+    properties:
+      userId:
+        type: string
+      username:
+        type: string
+      isDefaultAccount: # Necessario?
+        type: boolean
+      emailChannel: # Necessario?
+        type: string
+        # $ref: '#/definitions/EmailChannel'
+      status:
+        type: string
+      party:
+        $ref: '#/definitions/Adjuster'
+      name:
+        type: string
+      firstName:
+        type: string
+      accountNumbers: # Necessario?
+        type: string
+      portalType: # Necessario?
+        type: string
+      userRole:
+        type: string
+
+  # Adjuster
+  # Adjuster is the person representing the user that is currently working. Adjuster is a type assigned to the Web User.
+  Adjuster:
+    description: The details of the insurance adapter
+    properties:
+      self:
+        description: The unique ID of the resource
+        type: string
+      name:
+        description: The name of the i nsurance adjuster
+        type: string
+      address:
+        type: string
+      profile:
+        type: string
+        # $ref: '#/definitions/Profile'
+      mainUnit:
+        type: string
+      tiesList:
+        description: Lista dei legami
+        type: string
+      externalInspectorCode:
+        description: codiceIspettoreExt
+        type: string
+
+  # ADJUSTER INFO
+  AdjusterInfo:
+    description: A minimal set of information about the insurance adapter
+    properties:
+      self:
+        description: The unique ID of the resource
+        type: string
+      name:
+        description: The name of the insurance adjuster
+        type: string
+
+  # Profile
+  # Profile is assigned to users to change application and services behaviour.
+  Profile:
+    description: ''
+    properties:
+      self:
+        description: The unique ID of the resource
+        type: string
+      parameters:
+        type: string
+        description: I parametri sono una lista
+
+  # Claim Settlement Center
+  # Minimal data of the Claim Settlement Center.
+  ClaimSettlementCenterInfo:
+    properties:
+      self:
+        description: The unique ID of the resource
+        type: integer
+      description:
+        description: Description of the Claim Settlement Center
+        type: string
+
+  # Claim Settlement Center
+  # Extended data of the Claim Settlement Center. This is the physical center where Adjusters are assigned.
+  ClaimSettlementCenter:
+    properties:
+      self:
+        type: integer
+      description:
+        type: string
+      unitType:
+        type: string
+      extCode:
+        type: integer
+        format: int32
+        description: codice 4
+      address:
+        type: string
+      openingTime:
+        type: string
+        format: date-time
+      closingTime:
+        type: string
+        format: date-time
+      openingPhoneTime:
+        type: string
+        format: date-time
+      closingPhoneTime:
+        type: string
+        format: date-time
+      openingOperatorTime:
+        type: string
+        format: date-time
+      closingOperatorTime:
+        type: string
+        format: date-time
+      manager:
+        description: Center responsible person
+        type: string
+
+
+
+  # <---------------------------------------->
+  # APPLICATION VERSION
+  ApplicationVersion:
+    description: The version of the services
+    properties:
+      build:
+        type: integer
+        format: int32
+        default: 0
+        description: The build version (default 0)
+      major:
+        type: integer
+        format: int32
+        default: 0
+        description: The major version (default 0)
+      minor:
+        type: integer
+        format: int32
+        default: 0
+        description: The minor version (default 0)
+      revision:
+        type: integer
+        format: int32
+        default: 0
+        description: The revision version (default 0)
+    required:
+      - build
+      - major
+      - minor
+      - revision
+  # PRINTING MODE
+  PrintingMode:
+    description: The type of the of the printing type
+    type: string
+    enum:
+      - AUTO
+      - XPS
+      - PDF
+      - IMAGE
+  # CLIENT INFO
+  ClientInfo:
+    properties:
+      applicationVersion:
+        $ref: '#/definitions/ApplicationVersion'
+      machineId:
+        type: string
+        default: ''
+        description: The unique ID of the machine (default empty string)
+      osInfo:
+        type: string
+        default: ''
+        description: The Information of the operating system (default empty string)
+      printingMode:
+        $ref: '#/definitions/PrintingMode'
+    required:
+      - applicationVersion
+      - machineId
+      - osInfo
+      - printingMode
+  # LOGIN REQUEST
+  LoginRequest:
+    properties:
+      clientInfo:
+        $ref: '#/definitions/ClientInfo'
+      username:
+        type: string
+        description: The username
+      password:
+        type: string
+        format: password
+        description: The password
+    required:
+      - clientInfo
+      - username
+      - password
+  # LOGIN RESPONSE
+  LoginResponse:
+    properties:
+      token:
+        type: string
+        description: The security token
+      tokenTimeout:
+        type: integer
+        format: int64
+        description: The timeout of the token
+      username:
+        type: string
+        description: The username
+    required:
+      - token
+      - username
