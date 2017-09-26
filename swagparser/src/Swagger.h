@@ -5,16 +5,17 @@
 #include "yaml-cpp/yaml.h"
 #include "Service.h"
 
-using Services = std::vector<Service>;
+using namespace std;
+using Services = vector<Service>;
 
 class Swagger {
 
 public:
-	Swagger(std::string file = "");
+	Swagger(string file = "");
 
-	void Load(std::string file);
+	void Load(string file);
 
-	YAML::Node GetNestedNode(std::string path);
+	YAML::Node GetNestedNode(string path);
 
 	YAML::Node GetDefinitions();
 
@@ -22,6 +23,6 @@ public:
 
 private:
 	YAML::Node root_node;
-	std::string file;
+	string file;
 
 };

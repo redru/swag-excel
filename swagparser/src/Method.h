@@ -1,10 +1,18 @@
 #pragma once
 #include "yaml-cpp/yaml.h"
+#include "Parameter.h"
 
 using namespace std;
 using Tags = std::vector<std::string>;
+using Parameters = std::vector<Parameter>;
 
 class Method {
+
+public:
+	static const string Get;
+	static const string Post;
+	static const string Put;
+	static const string Delete;
 
 public:
 	Method(YAML::Node = YAML::Node());
@@ -12,6 +20,7 @@ public:
 	string GetOperationId();
 	string GetSummary();
 	string GetDescription();
+	Parameters GetParameters();
 
 private:
 	YAML::Node node;
@@ -21,7 +30,7 @@ private:
 	string description;
 	Tags tags;
 	string security;
-	string parameters;
+	Parameters parameters;
 	string responses;
 
 };

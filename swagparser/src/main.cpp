@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
 
 	Swagger swagger(src_file);
 	Services services = swagger.GetServices();
-	cout << services[0].GetMethod("post").GetDescription() << endl;
+	cout << swagger.GetServices()[0].GetMethod(Method::Get).GetParameters()[0].GetType() << endl;
 
 	return 0;
 }
